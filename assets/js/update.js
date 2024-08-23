@@ -89,7 +89,7 @@ const update = () => {
     ));
 
     for (let drop of waterdrops) {
-        drop.velocity = V;
+        drop.velocity = V * 2;
         drop.resistance = R;
         drop.position.x += drop.velocity - drop.resistance;
         drop.position.x += Math.random() - 0.5;
