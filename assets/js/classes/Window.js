@@ -15,7 +15,7 @@ class Window {
         this.height = height;
         this.context = this.canvas.getContext("2d");
         this.meta = meta;
-        this.fps = 20;
+        this.fps = 1;
     }
     start() {
         this.canvas.width = this.width;
