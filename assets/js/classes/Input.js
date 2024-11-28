@@ -10,7 +10,12 @@ class Input {
       }) {
         this.inputs = inputs;
         this.set_inputs();
-      }   
+      }
+    init() {
+        for (let input of this.inputs) {
+            //const rangeSliderElement = rangeSlider(inputs);
+        }
+    }
     set_inputs() {
         for (let input of this.inputs) {
             input.addEventListener("input", (event) => {

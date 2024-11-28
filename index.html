@@ -3,85 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fluid Stream Simulator</title>
-    <style>
-        canvas { border:1px solid #acb0be; background-color: #e3e6ef;}
-        #kill_switch {
-            margin-top: 20px;
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
-        }
-        .input_container, .output_container {
-            margin-top: 20px;
-            border: 1px solid #acb0be;
-            padding: 10px;
-            width: fit-content;
-        }
-    </style>
+    <title>Fluidum</title>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <div style="width: 1000px; height: 20px; position: relative;">
-        <div style="position: absolute; top: 0; left: 0;">|</div>
-        <div style="position: absolute; top: 0; left: 25%;">|</div>
-        <div style="position: absolute; top: 0; left: 50%;">|</div>
-        <div style="position: absolute; top: 0; left: 75%;">|</div>
-        <div style="position: absolute; top: 0; left: 100%;">|</div>
-        <div style="position: absolute; top: 20px; left: 0;">0m</div>
-        <div style="position: absolute; top: 20px; left: 25%;">7.62m</div>
-        <div style="position: absolute; top: 20px; left: 50%;">15.24m</div>
-        <div style="position: absolute; top: 20px; left: 75%;">22.86m</div>
-        <div style="position: absolute; top: 20px; right: 0;">30.48m</div>
+
+    <div class="container">
+        <header class="flex between">
+            <div class="logo">
+                <h1>Fluidum <span class="primary">v0.5</span></h1>
+            </div>
+            <div class="pause">
+                <button id="kill_switch" onclick="kill_sim()">Pause</button>
+            </div>
+        </header>
+        <main>
+            <div class="padding border viewport">
+                <div id="root" class="flex mobile center-x"></div>
+                <div class="flex between range-container">
+                    <div class="range-mark"></div>
+                    <div class="range-marker"></div>
+                    <div class="range-marker"></div>
+                    <div class="range-marker"></div>
+                    <div class="range-marker"></div>
+                    <div class="range-marker"></div>
+                </div>
+                <div class="flex between range-labels">
+                    <div class="range-label">0m</div>
+                    <div class="range-label">25m</div>
+                    <div class="range-label">50m</div>
+                    <div class="range-label">75m</div>
+                    <div class="range-label">100m</div>
+                </div>
+            </div>
+            <div class="flex mobile gap">
+                <div class="flex-66 padding border light-bg inputs"> 
+                    <div class="flex mobile gap">
+                        <div class="flex-auto">
+                            <div class="input">
+                                <label for="air_pressure">Atmosphere Pressure (PSI): <span id="air_pressure_value" class="highlight">14.6959</span></label>
+                                <input type="range" id="air_pressure" name="air_pressure" min="0" max="100" value="100">
+                            </div> 
+                            <div class="input">
+                                <label for="air_density">Atmosphere Density (Kg/m^3): <span id="air_density_value" class="highlight">1.225</span></label>
+                                <input type="range" id="air_density" name="air_density" min="0" max="10" value="5">
+                            </div>
+                            <div class="input">
+                                <label for="air_temperature">Atmosphere Temperature (C): <span id="air_temperature_value" class="highlight">20</span></label>
+                                <input type="range" id="air_temperature" name="air_temperature" min="-17" max="37" value="20">
+                            </div>
+                            <div class="input">
+                                <label for="fluid_pressure">Fluid Pressure (PSI): <span id="fluid_pressure_value" class="highlight">10</span></label>
+                                <input type="range" id="fluid_pressure" name="psi" min="1" max="300" value="10">
+                            </div>
+                        </div>
+                        <div class="flex-auto">
+                            <div class="input">
+                                <label for="fluid_density">Fluid Density (Kg/m^3): <span id="fluid_density_value" class="highlight">1005</span></label>
+                                <input type="range" id="fluid_density" name="flow" min="0" max="2000" value="1000">
+                            </div>
+                            <div class="input">
+                                <label for="fluid_temperature">Fluid Temperature (C): <span id="fluid_temperature_value" class="highlight">20</span></label>
+                                <input type="range" id="fluid_temperature" name="flow" min="0" max="100" value="20">
+                            </div>
+                            <div class="input">
+                                <label for="nozzle_diameter_in">Nozzle Diameter (mm): <span id="nozzle_diameter_in_value" class="highlight">10</span></label>
+                                <input type="range" id="nozzle_diameter_in" name="flow" min="1" max="100" value="10">
+                            </div>
+                            <div class="toggle">
+                                <label for="toggle_units">Toggle Units <span id="toggle_units_value" class="highlight">Imperial</span></label>
+                                <input type="checkbox" id="toggle_units" name="toggle_units" value="imperial">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <input type="range" class="input" id="nozzle_diameter_out" name="flow" min="1" max="100" value="10">
+                    <label for="nozzle_diameter_out">Nozzle Diameter out (mm): </label><span id="nozzle_diameter_out_value">10</span>
+                    <br> -->    
+                    <!-- <div class="range-slider"><range slider element
+                        <input type="range" /> hidden
+                        <div class="range-slider__thumb" data-lower></div>
+                        <div class="range-slider__range"></div>
+                    </div>                        -->
+                </div>
+                <div class="flex-33 padding border light-bg outputs">
+                    <div class="padding border nozzle-viewport">
+                        <!-- squar svg -->
+                        <svg id="nozzle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 20">
+                            <rect x="0" y="0" width="50" height="20" fill="none" stroke="#00D9FF" stroke-width="0.2"/>
+                        </svg>
+                    </div>
+                    <div class="output">
+                        <p>Flow velocity (W): <span class="highlight">0</span></p>
+                        <p>Volumetric flow rate (Q): <span class="highlight">0</span></p>
+                        <p>Reynolds number (Re): <span class="highlight">0</span></p>
+                        <p>Friction factor (f): <span class="highlight">0</span></p>
+                        <p>Pressure drop (ΔP): <span class="highlight">0</span></p>
+                        <p>Head loss (hL): <span class="highlight">0</span></p>
+                        <p>Power (P): <span class="highlight">0</span></p>
+                        <p>Range (R): <span class="highlight">0</span></p>
+                    </div>
+                    <hr>
+                    <h2>Range: <span id="range_value" class="highlight">0</span></h2>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <div class="flex between">
+                <div>
+                    <p>Contributors:</p>
+                    <ul>
+                        <li><a href="#">Keith Spang</a> (Programming & UI/UX Design)</li>
+                    </ul>
+                </div>
+                <div>
+                    <p>Blog article on <a href="https://beanwaterantics.com/notes" target="_blank" rel="noopener noreferrer">Bean Water Antics</a></p>
+                    <p>Source code on <a href="https://github.com/kspangdg/water-stream-sim" target="_blank" rel="noopener noreferrer">Github</a></p>
+                </div>
+            </div>
+        </footer>
     </div>
 
-    <br>
-    <div style="width: 1000px; display: flex; gap: 20px;">
-        <!-- psi range -->
-        <div class="input_container">
-            <!-- air presure -->
-            <input type="range" class="input" id="air_pressure" name="air_pressure" min="0" max="100" value="14.6959">
-            <label for="air_pressure">Atmosphere Pressure (PSI): </label><span id="air_pressure_value">14.6959</span>
-            <br>
-            <!-- air density -->
-            <input type="range" class="input" id="air_density" name="air_density" min="0" max="10" value="1.225">
-            <label for="air_density">Atmosphere Density (Kg/m^3): </label><span id="air_density_value">1.225</span>
-            <br>
-            <!--Air temp-->
-            <input type="range" class="input" id="air_temperature" name="air_temperature" min="-17" max="37" value="20">
-            <label for="air_temperature">Atmosphere Temperature (C): </label><span id="air_temperature_value">20</span>
-            <br>
-            <input type="range" class="input" id="fluid_pressure" name="psi" min="1" max="300" value="10">
-            <label for="fluid_pressure">Fluid Pressure (PSI): </label><span id="fluid_pressure_value">10</span>
-            <br>
-            <input type="range" class="input" id="fluid_density" name="flow" min="0" max="2000" value="1005">
-            <label for="fluid_density">Fluid Density (Kg/m^3): </label><span id="fluid_density_value">1005</span>
-            <br>
-            <input type="range" class="input" id="fluid_temperature" name="flow" min="0" max="100" value="20">
-            <label for="fluid_temperature">Fluid Temperature (C): </label><span id="fluid_temperature_value">20</span>
-            <br>
-            <input type="range" class="input" id="nozzle_diameter_in" name="flow" min="1" max="100" value="10">
-            <label for="nozzle_diameter_in">Nozzle Diameter (mm): </label><span id="nozzle_diameter_in_value">10</span>
-            <br>
-            <!-- <input type="range" class="input" id="nozzle_diameter_out" name="flow" min="1" max="100" value="10">
-            <label for="nozzle_diameter_out">Nozzle Diameter out (mm): </label><span id="nozzle_diameter_out_value">10</span>
-            <br> -->
-        </div>
-        <div class="output_container">
-            <!-- <p>Flow velocity (W): <span>0</span></p>
-            <p>Volumetric flow rate (Q): <span>0</span></p>
-            <p>Reynolds number (Re): <span>0</span></p>
-            <p>Friction factor (f): <span>0</span></p>
-            <p>Pressure drop (ΔP): <span>0</span></p>
-            <p>Head loss (hL): <span>0</span></p>
-            <p>Power (P): <span>0</span></p>
-            <p>Range (R): <span>0</span></p> -->
-        </div>
-    </div>
-    <button id="kill_switch" onclick="kill_sim()">KILL SWITCH</button><span> Incase Keith's garbage loop starts crashing the browser, don't panic! Just hit the kill switch ;)</span>
     <!-- Classes -->
     <script type="text/javascript" src="assets/js/classes/Window.js"></script>
     <script type="text/javascript" src="assets/js/classes/Render.js"></script>

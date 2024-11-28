@@ -20,7 +20,8 @@ class Window {
     start() {
         this.canvas.width = this.width;
         this.canvas.height = this.height;
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        let root = document.getElementById("root");
+        root.appendChild(this.canvas);
         this.context.fillRect(0, 0, this.width, this.height);
         this.interval_frames = setInterval(update, this.fps);  
     }

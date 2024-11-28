@@ -12,23 +12,22 @@ const _Window = new Window(document.createElement("canvas"), 1000, 500, {
 const _Helper = new Helper();
 const _Physics = new Physics();
 const _Input = new Input({ inputs: document.querySelectorAll("input")});
-const _Output = new Output({ output: document.querySelector(".output_container") });
+const _Output = new Output({ output: document.querySelector(".output") });
 const nozzle = new Render({
     position: { x: 0, y: 240 },
     size: { w: 10, h: 2 },
-    color: "black",
+    color: "#444444",
     shape: "rectangle"
 });
 const range_marker = new Render({
     position: { x: 0, y: 450 },
     size: { w: 2, h: 50 },
-    color: "black",
+    color: "#FFFFFF",
     shape: "rectangle"
 });
 const marker_text = new Render({
     position: { x: 0, y: 450 },
     size: { w: "20px", h: "Arial" },
-    color: "Range",
     shape: "text",
     text: "Range: 0m"
 });
@@ -83,7 +82,7 @@ const update = () => {
         {
             position: { x: 10, y: 240},
             size: { w: _Window.meta.nozzle_diameter_in / 5, h: _Window.meta.nozzle_diameter_in / 5 },
-            color: "blue",
+            color: "#00D9FF",
             shape: "rectangle"
         }
     ));
