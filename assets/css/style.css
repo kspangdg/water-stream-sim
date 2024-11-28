@@ -155,7 +155,7 @@ header {
     height: var(--spacing-medium);
     width: 0.0625rem;
 }
-.range-label {
+.range-labels {
     color: var(--color-light-gray);
     margin-top: var(--spacing-small);
 }
@@ -164,7 +164,7 @@ header {
 .input {
     margin-bottom: var(--spacing-medium);
 }
-.input label {
+.input label, .toggle label {
     display: block;
     margin-bottom: var(--spacing-small);
 }
@@ -175,20 +175,20 @@ input[type=range] {
     width: 100%;
     background: transparent;
 
-  }
-  input[type=range]:focus {
+}
+input[type=range]:focus {
     outline: none;
-  }
-  input[type=range]::-webkit-slider-runnable-track {
+}
+input[type=range]::-webkit-slider-runnable-track {
     width: 100%;
-    height: 0.66rem;
+    height: 0.5rem;
     cursor: pointer;
     box-shadow: none;
-    border-radius: 0.33rem;
-    background: var(--color-darker-gray);
+    border-radius: 0.5rem;
+    background: var(--color-black);
     border: var(--border);
-  }
-  input[type=range]::-webkit-slider-thumb {
+}
+input[type=range]::-webkit-slider-thumb {
     box-shadow: none;
     border: 1px solid var(--color-primary);
     height: 1rem;
@@ -197,21 +197,21 @@ input[type=range] {
     background: var(--color-black);
     cursor: pointer;
     -webkit-appearance: none;
-    margin-top: -0.25rem;
-  }
-  input[type=range]:focus::-webkit-slider-runnable-track {
+    margin-top: -0.32rem;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
     background: unset;
-  }
-  input[type=range]::-moz-range-track {
+}
+input[type=range]::-moz-range-track {
     width: 100%;
-    height: 0.66rem;
+    height: 0.5rem;
     cursor: pointer;
     box-shadow: none;
-    border-radius: 0.33rem;
-    background: var(--color-darker-gray);
+    border-radius: 0.5rem;
+    background: var(--color-black);
     border: var(--border);
-  }
-  input[type=range]::-moz-range-thumb {
+}
+input[type=range]::-moz-range-thumb {
     box-shadow: none;
     border: 1px solid var(--color-primary);
     height: 1rem;
@@ -219,29 +219,29 @@ input[type=range] {
     border-radius: 0.5rem;
     background: var(--color-black);
     cursor: pointer;
-  }
-  input[type=range]::-ms-track {
+}
+input[type=range]::-ms-track {
     width: 100%;
-    height: 0.66rem;
+    height: 0.5rem;
     cursor: pointer;
     background: transparent;
     border-color: transparent;
     border-width: 16px 0;
     color: transparent;
-  }
-  input[type=range]::-ms-fill-lower {
+}
+input[type=range]::-ms-fill-lower {
     background: var(--color-gray);
     border: 0.2px solid #010101;
     border-radius: 2.6px;
     box-shadow: none;
-  }
-  input[type=range]::-ms-fill-upper {
+}
+input[type=range]::-ms-fill-upper {
     background: var(--color-gray);
     border: 0.2px solid #010101;
     border-radius: 2.6px;
     box-shadow: none;
-  }
-  input[type=range]::-ms-thumb {
+}
+input[type=range]::-ms-thumb {
     box-shadow: none;
     border: 1px solid #000000;
     height: 36px;
@@ -249,18 +249,45 @@ input[type=range] {
     border-radius: 3px;
     background: var(--color-gray);
     cursor: pointer;
-  }
-  input[type=range]:focus::-ms-fill-lower {
+}
+input[type=range]:focus::-ms-fill-lower {
     background: var(--color-gray);
-  }
-  input[type=range]:focus::-ms-fill-upper {
+}
+input[type=range]:focus::-ms-fill-upper {
     background: var(--color-gray);
-  }
+}
 
-  .nozzle-viewport {
+.toggle-wrapper {
+    background-color: var(--color-black);
+    width: 2rem;
+    height: calc(var(--spacing-medium) + 2px);
+    border-radius: 1rem;
+    border: var(--border);
+    cursor: pointer;
+}
+.toggle-wrapper::before {
+    content: '';
+    display: block;
+    width: calc(var(--spacing-medium) - 2px);
+    height: calc(var(--spacing-medium) - 2px);
+    border-radius: 50%;
+    border: 1px solid var(--color-primary);
+    background-color: var(--color-black);
+    transition: transform var(--transition);
+}
+.toggle-wrapper.active::before {
+    transform: translateX(calc(var(--spacing-medium) - 2px));
+}
+
+.nozzle-viewport {
     margin-bottom: var(--spacing-medium);
     background-color: var(--color-black);
-  }
+}
+
+#nozzle path {
+    fill: rgba(0, 204, 255, 0.2);
+    stroke: var(--color-primary);
+}
 
 /* footer */
 footer {

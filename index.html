@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fluidum</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico"/>
 </head>
 <body>
 
     <div class="container">
         <header class="flex between">
             <div class="logo">
-                <h1>Fluidum <span class="primary">v0.5</span></h1>
+                <h1>Fluidum <span class="primary">v1.6</span></h1>
             </div>
             <div class="pause">
                 <button id="kill_switch" onclick="kill_sim()">Pause</button>
@@ -28,12 +29,16 @@
                     <div class="range-marker"></div>
                     <div class="range-marker"></div>
                 </div>
-                <div class="flex between range-labels">
-                    <div class="range-label">0m</div>
-                    <div class="range-label">25m</div>
-                    <div class="range-label">50m</div>
-                    <div class="range-label">75m</div>
-                    <div class="range-label">100m</div>
+                <div class="flex range-labels">
+                    <div class="flex-auto">0m</div>
+                    <div class="flex-auto">25m</div>
+                    <div class="flex-auto">50m</div>
+                    <div class="flex-auto">
+                        <div class="flex between">
+                            <span>75m</span>
+                            <span>100m</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="flex mobile gap">
@@ -67,12 +72,16 @@
                                 <input type="range" id="fluid_temperature" name="flow" min="0" max="100" value="20">
                             </div>
                             <div class="input">
-                                <label for="nozzle_diameter_in">Nozzle Diameter (mm): <span id="nozzle_diameter_in_value" class="highlight">10</span></label>
-                                <input type="range" id="nozzle_diameter_in" name="flow" min="1" max="100" value="10">
+                                <label for="nozzle_diameter_in">Nozzle Diameter in (mm): <span id="nozzle_diameter_in_value" class="highlight">60</span></label>
+                                <input type="range" id="nozzle_diameter_in" name="flow" min="1" max="100" value="60">
+                            </div>
+                            <div class="input">
+                                <label for="nozzle_diameter_out">Nozzle Diameter Out (mm): <span id="nozzle_diameter_out_value" class="highlight">10</span></label>
+                                <input type="range" id="nozzle_diameter_out" name="flow" min="1" max="100" value="10">
                             </div>
                             <div class="toggle">
-                                <label for="toggle_units">Toggle Units <span id="toggle_units_value" class="highlight">Imperial</span></label>
-                                <input type="checkbox" id="toggle_units" name="toggle_units" value="imperial">
+                                <label for="toggle_units">Toggle Units <span id="toggle_units_value" class="highlight">Metric</span></label>
+                                <div class="toggle-wrapper" id="toggle_units"></div>
                             </div>
                         </div>
                     </div>
@@ -86,10 +95,16 @@
                     </div>                        -->
                 </div>
                 <div class="flex-33 padding border light-bg outputs">
-                    <div class="padding border nozzle-viewport">
+                    <div class="flex center-x center-y padding border nozzle-viewport">
                         <!-- squar svg -->
-                        <svg id="nozzle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 20">
-                            <rect x="0" y="0" width="50" height="20" fill="none" stroke="#00D9FF" stroke-width="0.2"/>
+                        <svg viewBox="0 0 100 100" width="50px" height="50px" id="nozzle">
+                            <path d="
+                                M 0,0 
+                                L 100,0
+                                L 100,100
+                                L 0,100
+                                Z
+                            "/> 
                         </svg>
                     </div>
                     <div class="output">

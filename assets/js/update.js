@@ -1,13 +1,15 @@
 // VARIABLES
 const _Window = new Window(document.createElement("canvas"), 1000, 500, {
+    // Set default meta values
     air_pressure: 14.6959, // Air pressure in pascal
     air_density: 1.225, // Air density in kg/m^3
     air_temperature: 20, // Air temperature in celsius
     fluid_pressure: 10, // Fluid pressure in pascal
     fluid_density: 1005, // Water density in kg/m^3
     fluid_temperature: 20, // Water temperature in celsius
-    nozzle_diameter_in: 10, // Nozzle diameter in millimeters
+    nozzle_diameter_in: 60, // Nozzle diameter in millimeters
     nozzle_diameter_out: 10, // Nozzle diameter out in millimeters
+    units: 0, // 0 = metric, 1 = imperial
 });
 const _Helper = new Helper();
 const _Physics = new Physics();
@@ -19,18 +21,19 @@ const nozzle = new Render({
     color: "#444444",
     shape: "rectangle"
 });
-const range_marker = new Render({
-    position: { x: 0, y: 450 },
-    size: { w: 2, h: 50 },
-    color: "#FFFFFF",
-    shape: "rectangle"
-});
-const marker_text = new Render({
-    position: { x: 0, y: 450 },
-    size: { w: "20px", h: "Arial" },
-    shape: "text",
-    text: "Range: 0m"
-});
+// Legacy code
+// const range_marker = new Render({
+//     position: { x: 0, y: 450 },
+//     size: { w: 2, h: 50 },
+//     color: "#FFFFFF",
+//     shape: "rectangle"
+// });
+// const marker_text = new Render({
+//     position: { x: 0, y: 450 },
+//     size: { w: "20px", h: "Arial" },
+//     shape: "text",
+//     text: "Range: 0m"
+// });
 let waterdrops = [];
 
 // MAIN LOOP
@@ -40,8 +43,8 @@ const update = () => {
     // Calculate flow velocity and volumetric flow rate leaving the nozzle
     let P = _Helper.psi_to_pa(_Window.meta.fluid_pressure);
     let p = _Window.meta.fluid_density;
-    let a1 = Math.PI * Math.pow(_Window.meta.nozzle_diameter_in / 1000.0, 2.0);
-    let a2 = Math.PI * Math.pow(_Window.meta.nozzle_diameter_out / 1000.0, 2.0); 
+    let a1 = Math.PI * Math.pow(_Window.meta.nozzle_diameter_out / 1000.0, 2.0);
+    let a2 = Math.PI * Math.pow(_Window.meta.nozzle_diameter_in / 1000.0, 2.0); 
     let Ap = _Helper.psi_to_pa(_Window.meta.air_pressure);
 
     let V = _Physics.flow_velocity(P, p, a1, a2);
@@ -81,7 +84,7 @@ const update = () => {
     waterdrops.push(new Render(
         {
             position: { x: 10, y: 240},
-            size: { w: _Window.meta.nozzle_diameter_in / 5, h: _Window.meta.nozzle_diameter_in / 5 },
+            size: { w: _Window.meta.nozzle_diameter_out / 5, h: _Window.meta.nozzle_diameter_out / 5 },
             color: "#00D9FF",
             shape: "rectangle"
         }
@@ -97,17 +100,21 @@ const update = () => {
         drop.update();
         if (drop.position.x > _Window.width || drop.position.y > _Window.height - 10) {
             // update range marker
-            range_marker.position.x = drop.position.x;
-            marker_text.position.x = drop.position.x;
-            marker_text.text = `Range: ${_Helper.px_to_m(drop.position.x).toFixed(2)}m`;
+            // range_marker.position.x = drop.position.x;
+            // marker_text.position.x = drop.position.x;
+            // marker_text.text = `Range: ${_Helper.px_to_m(drop.position.x).toFixed(2)}m`;
             waterdrops.splice(waterdrops.indexOf(drop), 1);
             drop = null;
         }
     }
-    nozzle.size.h = _Window.meta.nozzle_diameter_in / 5;
+    nozzle.size.h = _Window.meta.nozzle_diameter_out / 5;
     nozzle.update();
-    range_marker.update();
-    marker_text.update();
+
+    //update nozzle svg
+    _Output.update_nozzle_diameter(_Window.meta.nozzle_diameter_in, _Window.meta.nozzle_diameter_out);
+    _Output.update_nozzle_pressure(_Window.meta.fluid_pressure);
+    //range_marker.update();
+    //marker_text.update();
 
 };
 
