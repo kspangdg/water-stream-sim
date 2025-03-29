@@ -39,4 +39,5 @@ class Helper {
     newton_to_drop_velocity(n) {
         return n * 0.1;
     }
+    
 }

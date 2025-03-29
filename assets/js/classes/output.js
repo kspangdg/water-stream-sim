@@ -39,7 +39,7 @@ class Output {
       ];
       let index = fluid_pressure / 3;
       index = Math.round(index) / 10;
-      console.log('index', index);
+      //console.log('index', index);
       
       nozzle_path.style.fill = colors[index];
     }

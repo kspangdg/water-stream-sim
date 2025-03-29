@@ -1,120 +1,81 @@
 // VARIABLES
-const _Window = new Window(document.createElement("canvas"), 1000, 500, {
-    // Set default meta values
-    air_pressure: 14.6959, // Air pressure in pascal
-    air_density: 1.225, // Air density in kg/m^3
-    air_temperature: 20, // Air temperature in celsius
-    fluid_pressure: 10, // Fluid pressure in pascal
-    fluid_density: 1005, // Water density in kg/m^3
-    fluid_temperature: 20, // Water temperature in celsius
-    nozzle_diameter_in: 60, // Nozzle diameter in millimeters
-    nozzle_diameter_out: 10, // Nozzle diameter out in millimeters
-    units: 0, // 0 = metric, 1 = imperial
-});
+const _Window = new Window(document.createElement("canvas"), 1000, 250, {});
 const _Helper = new Helper();
-const _Physics = new Physics();
-const _Input = new Input({ inputs: document.querySelectorAll("input")});
-const _Output = new Output({ output: document.querySelector(".output") });
-const nozzle = new Render({
-    position: { x: 0, y: 240 },
-    size: { w: 10, h: 2 },
-    color: "#444444",
-    shape: "rectangle"
-});
-// Legacy code
-// const range_marker = new Render({
-//     position: { x: 0, y: 450 },
-//     size: { w: 2, h: 50 },
-//     color: "#FFFFFF",
-//     shape: "rectangle"
-// });
-// const marker_text = new Render({
-//     position: { x: 0, y: 450 },
-//     size: { w: "20px", h: "Arial" },
-//     shape: "text",
-//     text: "Range: 0m"
-// });
-let waterdrops = [];
 
-// MAIN LOOP
+// Output data
+const _Output = new Output({ output: document.querySelector(".output") });
+
+
+let ds = [];
+let t = 0.0;
+
+// MAIN LOOP (speed set in Window.js fps)
 const update = () => {
     _Window.clear();
 
-    // Calculate flow velocity and volumetric flow rate leaving the nozzle
-    let P = _Helper.psi_to_pa(_Window.meta.fluid_pressure);
-    let p = _Window.meta.fluid_density;
-    let a1 = Math.PI * Math.pow(_Window.meta.nozzle_diameter_out / 1000.0, 2.0);
-    let a2 = Math.PI * Math.pow(_Window.meta.nozzle_diameter_in / 1000.0, 2.0); 
-    let Ap = _Helper.psi_to_pa(_Window.meta.air_pressure);
 
-    let V = _Physics.flow_velocity(P, p, a1, a2);
-    let Q = _Physics.volumetric_flow_rate(V, a2);
+    // Numerical parameters
+    const dt = 0.0001; // s, time step
+    const n_d = 1000; // number of droplets
+    // physical parameters
+    const D_max_s = 0.7; // D_max/d_0, trettel_turbulent_2020 p. 198 (corrected)
+    const C_d = 0.42; // drag coefficient, loth_quasi-steady_2008
+    const alpha = 0.05; // entrainment coefficient, trettel_turbulent_2020 p. 179
+    const sigma_b = 0.13190; // breakup length standard deviation (conductivity_plots.m, trettel_turbulent_2020 p. 177)
 
-    // Calculate air resistance
-    let R = _Physics.air_resistance(V, a1, p, Ap);
+    const rho_w = 1000.0; // kg/m3, mass density of water
+    const sigma = 0.0728; // N/m, surface tension of water
+    const rho_g = 1.293; // kg/m3, mass density of air
+    const g = 9.81; // m/s2, gravitational acceleration
 
-    // Calculate fluid mass and Gravity
-    let m = _Physics.fluid_mass(V, a1, p);
-    let Fg = _Physics.gravity_force(m);
+    const h_0 = _Window.height - _Helper.ft_to_px(_Helper.m_to_ft(1.5)); // firing height (1.5 m)
+    
+    const theta_0 = (35.0 * Math.PI) / 180.0; // radians, firing angle above horizontal
+    const Tubar_0 = 0.01; // dimensionless, turbulence intensity
+    const d_0 = 0.00635; // m, nozzle diameter
+    const Q = 100; // mL/s, flow rate
 
-    _Output.update_output(`Flow velocity: ${V} m/s <br> Volumetric flow rate: ${Q} m^3/s <br> Air resistance: ${R} pascal <br> Fluid mass: ${m} kg <br> Gravity force: ${Fg} N`);
-
-
-
-    //convert to pixels
-    V = _Helper.m_to_ft(V);
-    V = _Helper.ft_to_px(V) / 1000; // account for frame rate
-
-    //convert to pixels
-    Q = _Helper.m_to_ft(Q);
-    Q = _Helper.ft_to_px(Q);
-
-    //convert to pixels
-    R = _Helper.m_to_ft(R);
-    R = _Helper.ft_to_px(R) / 100000; // account for frame rate
-
-    //convert to pixels
-    Fg = _Helper.newton_to_drop_velocity(Fg);
-    Fg = _Helper.ft_to_px(Fg) / 10000; // account for frame rate
-
+    const A_0 = (Math.PI / 4.0) * Math.pow(d_0, 2); // m2, nozzle area
+    const Ubar_0 = (Q * 0.0000010) / A_0; // m/s, jet velocity
     
 
+    ds.push(new Droplet(rho_w, Ubar_0, d_0, sigma, sigma_b, Tubar_0, D_max_s, h_0, theta_0));
 
-
-    waterdrops.push(new Render(
-        {
-            position: { x: 10, y: 240},
-            size: { w: _Window.meta.nozzle_diameter_out / 5, h: _Window.meta.nozzle_diameter_out / 5 },
-            color: "#00D9FF",
-            shape: "rectangle"
+    for (let d of ds) {
+        let drag_x;
+        let drag_y;
+        t = t + dt;
+        
+        if (t < d.t_b) {
+          const u_g = alpha * d.velocity.u; // estimate of gas x velocity
+          const v_g = alpha * d.velocity.v; // estimate of gas y velocity
+          const rel_u = d.velocity.u - u_g;
+          const rel_v = d.velocity.v - v_g;
+          const rel_vel = Math.sqrt(Math.pow(rel_u, 2) + Math.pow(rel_v, 2));
+          drag_x = (-0.5 * rho_g * C_d * d.a_d * rel_vel * rel_u) / d.m_d;
+          drag_y = (-0.5 * rho_g * C_d * d.a_d * rel_vel * rel_v) / d.m_d;
+        } else {
+          drag_x = 0.0;
+          drag_y = 0.0;
         }
-    ));
+  
+        d.velocity.u = d.velocity.u + dt * drag_x;
+        d.velocity.v = d.velocity.v + dt * ((g * -1) + drag_y);
 
-    for (let drop of waterdrops) {
-        drop.velocity = V * 2;
-        drop.resistance = R;
-        drop.position.x += drop.velocity - drop.resistance;
-        drop.position.x += Math.random() - 0.5;
-        drop.position.y += drop.gravity;
-        drop.gravity += Fg;
-        drop.update();
-        if (drop.position.x > _Window.width || drop.position.y > _Window.height - 10) {
-            // update range marker
-            // range_marker.position.x = drop.position.x;
-            // marker_text.position.x = drop.position.x;
-            // marker_text.text = `Range: ${_Helper.px_to_m(drop.position.x).toFixed(2)}m`;
-            waterdrops.splice(waterdrops.indexOf(drop), 1);
-            drop = null;
+        d.position.x = d.position.x + dt * d.velocity.u;
+        d.position.y = d.position.y + dt * d.velocity.v;
+        
+        
+        
+
+        d.update(); // This just draws the droplet on the canvas.
+
+        // Remove droplets that are out of bounds.
+        if (d.position.x > _Window.width || d.position.y > _Window.height - 10) {
+            ds.splice(ds.indexOf(d), 1);
+            d = null;
         }
     }
-    nozzle.size.h = _Window.meta.nozzle_diameter_out / 5;
-    nozzle.update();
-
-    //update nozzle svg
-    _Output.update_nozzle_diameter(_Window.meta.nozzle_diameter_in, _Window.meta.nozzle_diameter_out);
-    _Output.update_nozzle_pressure(_Window.meta.fluid_pressure);
-    //range_marker.update();
-    //marker_text.update();
 
 };
 
