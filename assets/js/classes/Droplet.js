@@ -27,6 +27,7 @@ class Droplet {
         D_max_s, // dimensionless, maximum droplet size scaling factor 
         h_0,
         theta_0,
+        t,
     ) {
       this.We_l0 = (rho_w * Math.pow(Ubar_0, 2) * d_0) / sigma;
   
@@ -35,12 +36,14 @@ class Droplet {
       this.d = D_max_s * d_0 * Math.random(); // m, droplet diameter
       this.t_b = (d_0 * this.avg_x_b_s(Tubar_0, this.We_l0) / Ubar_0) * (1.0 + sigma_b * 2.0 * (Math.random() - 0.5)); // s, breakup time
       
-      this.position = {x: 10.0, y: h_0}; // m/s, droplet x location & y location
+      this.position = {x: 0.0, y: h_0}; // m/s, droplet x location & y location
       this.velocity = {u: Ubar_0 * Math.cos(theta_0), v: Ubar_0 * Math.sin(theta_0)}; // m/s, droplet x and y velocity 
   
       this.m_d = (Math.PI / 6.0) * rho_w * Math.pow(this.d, 3); // kg, mass of droplet
       this.a_d = (Math.PI / 4.0) * Math.pow(this.d, 2); // m2, droplet projected area
       this.size = 10;
+
+      this.t = 0.0; // s, time since start of simulation
 
       //debug
       //console.log(h_0);
@@ -51,16 +54,19 @@ class Droplet {
         // breakup length, trettel_turbulent_2020 eq. 3.28
         return 3.61 * Math.pow(Tubar_0, -0.275) * Math.pow(We_l0, 0.334);
     }
-    draw() {
+    draw(x, y) {
         _Window.context.beginPath();
         _Window.context.fillStyle = '#00D9FF';
-        _Window.context.arc(this.position.x, this.position.y, 2, 0, 2 * Math.PI);
+        _Window.context.arc(x, y, 2, 0, 2 * Math.PI);
         _Window.context.fill();
     }
     update() {
         // console.log('this.u', this.velocity.u);
-        // console.log('this.v', this.velocity.v);
+        let x = _Helper.m_to_px(this.position.x);
+        let y = this.position.y;
         
-        this.draw();
+        this.draw(x, y);
+        // console.log('x', x);
+        // console.log('y', y);
     }
 }
