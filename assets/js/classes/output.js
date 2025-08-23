@@ -5,13 +5,17 @@
  */
 
 class Output {
-    constructor({
-        output,
-      }) {
-        this.output = output;
-      }   
-    update_output(text) {
-        this.output.innerHTML = text;
+    constructor(output) {
+      this.output = output;
+    }   
+    update_output() {
+        for (let i = 0; i < this.output.length; i++) {
+            let output_wrapper = this.output[i];
+            let output_id = output_wrapper.id.split("_output")[0];
+            if (vars[output_id] !== undefined) {
+                output_wrapper.querySelector("span").innerText = vars[output_id].toFixed(2);
+            }
+        }
     }
     update_nozzle_diameter(nozzle_diameter_in, nozzle_diameter_out) {
       let nozzle = document.getElementById("nozzle");
@@ -25,22 +29,6 @@ class Output {
     update_nozzle_pressure(fluid_pressure) {
       let nozzle = document.getElementById("nozzle");
       let nozzle_path = nozzle.getElementsByTagName("path")[0];
-      let colors = [
-        "rgba(0, 255, 242, 0.2)",
-        "rgba(0, 204, 255, 0.2)",
-        "rgba(0, 100, 255, 0.2)",
-        "rgba(0, 42, 255, 0.2)",
-        "rgba(68, 0, 255, 0.2)",
-        "rgba(153, 0, 255, 0.2)",
-        "rgba(221, 0, 255, 0.2)",
-        "rgba(255, 0, 144, 0.2)",
-        "rgba(255, 0, 93, 0.2)",
-        "rgba(255, 0, 0, 0.2)"
-      ];
-      let index = fluid_pressure / 3;
-      index = Math.round(index) / 10;
-      //console.log('index', index);
-      
-      nozzle_path.style.fill = colors[index];
+      nozzle_path.style.fill = 'hsl(' + (216 + Math.min(fluid_pressure, 120) ) + ', 99%, 59%)';
     }
 }

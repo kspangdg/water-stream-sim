@@ -1,22 +1,22 @@
 /* Variable */
 :root {
-    --color-black: #1E1E1E;
-    --color-drak-gray: #212121;
-    --color-gray: #2D2D2D;
-    --color-light-gray: #444444;
-    --color-white: #FFFFFF;
-    --color-primary: #00D9FF;
+    --color-black: #FFFFFF;
+    --color-drak-gray: #fafafa;
+    --color-gray: #e2e2e2;
+    --color-light-gray: #757575;
+    --color-white: #1E1E1E;
+    --color-primary: #2d81fe;
 
     --font-main: Arial, sans-serif;
     --heading-size: 0.875rem;
     --body-size: 0.75rem;
 
-    --spacing-small: 0.3rem;
-    --spacing-medium: 1rem;
-    --spacing-large: 3rem;
+    --spacing-small: 0.33rem;
+    --spacing-medium: 0.66rem;
+    --spacing-large: 1rem;
 
     --border-radius: 0.5rem;
-    --border: 1px solid var(--color-light-gray);
+    --border: 1px solid #757575;
 
     --transition: 0.3s ease;
 }
@@ -26,6 +26,15 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+body.dark {
+    --color-black: #1E1E1E;
+    --color-drak-gray: #212121;
+    --color-gray: #2D2D2D;
+    --color-light-gray: #444444;
+    --color-white: #FFFFFF;
+
+    --border: 1px solid #444444;
 }
 
 body {
@@ -140,7 +149,7 @@ header {
 }
 .range-container {
     position: relative;
-    border-bottom: var(--border);
+    border-top: var(--border);
 }
 .range-mark {
     position: absolute;
@@ -282,11 +291,6 @@ input[type=range]:focus::-ms-fill-upper {
 .nozzle-viewport {
     margin-bottom: var(--spacing-medium);
     background-color: var(--color-black);
-}
-
-#nozzle path {
-    fill: rgba(0, 204, 255, 0.2);
-    stroke: var(--color-primary);
 }
 
 /* footer */

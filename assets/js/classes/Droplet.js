@@ -41,12 +41,9 @@ class Droplet {
   
       this.m_d = (Math.PI / 6.0) * rho_w * Math.pow(this.d, 3); // kg, mass of droplet
       this.a_d = (Math.PI / 4.0) * Math.pow(this.d, 2); // m2, droplet projected area
-      this.size = 10;
+      this.s = (this.d * 500) + 1; // I scaled up the droplet size for better visibility on canvas - KS
 
       this.t = 0.0; // s, time since start of simulation
-
-      //debug
-      //console.log(h_0);
       
     }
 
@@ -56,17 +53,13 @@ class Droplet {
     }
     draw(x, y) {
         _Window.context.beginPath();
-        _Window.context.fillStyle = '#00D9FF';
-        _Window.context.arc(x, y, 2, 0, 2 * Math.PI);
+        _Window.context.fillStyle = '#2d81fe';
+        _Window.context.arc(x, y, this.s, 0, 2 * Math.PI);
         _Window.context.fill();
     }
     update() {
-        // console.log('this.u', this.velocity.u);
         let x = _Helper.m_to_px(this.position.x);
         let y = this.position.y;
-        
         this.draw(x, y);
-        // console.log('x', x);
-        // console.log('y', y);
     }
 }

@@ -5,8 +5,10 @@
  */
 
 class Helper {
-    // 1000 px = 100 m
     m_to_px(m) {
-        return (m * 1000.0) / 100.0; // px
+        return (m / 30.0) * 1000.0;
+    }
+    px_to_m(px) {
+        return (px / 1000.0) * 30.0;
     }
 }

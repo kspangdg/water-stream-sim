@@ -12,17 +12,23 @@
     <div class="container">
         <header class="flex between">
             <div class="logo">
-                <h1>Amnis <span class="primary">v1.8</span></h1>
+                <h1>Amnis <span class="primary">v1.8.0</span></h1>
             </div>
-            <div class="pause">
-                <button id="kill_switch" onclick="kill_sim()">Pause</button>
+            <div class="flex gap">
+                <div class="dark_mode">
+                    <button id="dark_mode" onclick="dark_mode()">Dark Mode</button>
+                </div>
+                <div class="pause">
+                    <button id="kill_switch" onclick="kill_sim()">Pause</button>
+                </div>
             </div>
         </header>
         <main>
             <div class="padding border viewport">
                 <div id="root" class="flex mobile center-x"></div>
                 <div class="flex between range-container">
-                    <div class="range-mark"></div>
+                    <div class="range-marker"></div>
+                    <div class="range-marker"></div>
                     <div class="range-marker"></div>
                     <div class="range-marker"></div>
                     <div class="range-marker"></div>
@@ -31,12 +37,14 @@
                 </div>
                 <div class="flex range-labels">
                     <div class="flex-auto">0m</div>
-                    <div class="flex-auto">25m</div>
-                    <div class="flex-auto">50m</div>
+                    <div class="flex-auto">5m</div>
+                    <div class="flex-auto">10m</div>
+                    <div class="flex-auto">15m</div>
+                    <div class="flex-auto">20m</div>
                     <div class="flex-auto">
                         <div class="flex between">
-                            <span>75m</span>
-                            <span>100m</span>
+                            <span>25m</span>
+                            <span>30m</span>
                         </div>
                     </div>
                 </div>
@@ -45,54 +53,54 @@
                 <div class="flex-66 padding border light-bg inputs"> 
                     <div class="flex mobile gap">
                         <div class="flex-auto">
-                            <!-- <div class="input">
-                                <label for="air_pressure">Atmosphere Pressure (PSI): <span id="air_pressure_value" class="highlight">14.6959</span></label>
-                                <input type="range" id="air_pressure" name="air_pressure" min="0" max="100" value="100">
+                            <div class="input">
+                                <label for="D_max_s">D_max/d_0: <span id="D_max_s_value" class="highlight">0.7</span></label>
+                                <input type="range" id="D_max_s" name="D_max_s" min="0.0" max="2.0" step="0.1" value="0.7">
                             </div> 
                             <div class="input">
-                                <label for="air_density">Atmosphere Density (Kg/m^3): <span id="air_density_value" class="highlight">1.225</span></label>
-                                <input type="range" id="air_density" name="air_density" min="0" max="10" value="5">
-                            </div>
+                                <label for="C_d">Drag Coefficient: <span id="C_d_value" class="highlight">0.42</span></label>
+                                <input type="range" id="C_d" name="C_d" min="0.0" max="1.0" step="0.01" value="0.42">
+                            </div> 
                             <div class="input">
-                                <label for="air_temperature">Atmosphere Temperature (C): <span id="air_temperature_value" class="highlight">20</span></label>
-                                <input type="range" id="air_temperature" name="air_temperature" min="-17" max="37" value="20">
-                            </div>
+                                <label for="alpha">Entrainment Coefficient: <span id="alpha_value" class="highlight">0.05</span></label>
+                                <input type="range" id="alpha" name="alpha" min="0.0" max="0.50" step="0.01" value="0.05">
+                            </div> 
                             <div class="input">
-                                <label for="fluid_pressure">Fluid Pressure (PSI): <span id="fluid_pressure_value" class="highlight">10</span></label>
-                                <input type="range" id="fluid_pressure" name="psi" min="1" max="300" value="10">
-                            </div> -->
+                                <label for="sigma_b">Breakup Length Standard Deviation: <span id="sigma_b_value" class="highlight">0.13190</span></label>
+                                <input type="range" id="sigma_b" name="sigma_b" min="0.0" max="0.5" step="0.00001" value="0.13190">
+                            </div> 
+                            <div class="input">
+                                <label for="g">Gravitational Acceleration (m/s2): <span id="g_value" class="highlight">9.81</span></label>
+                                <input type="range" id="g" name="g" min="0.0" max="100.0" step="0.01" value="9.81">
+                            </div> 
+                            <div class="input">
+                                <label for="Tubar_0">Turbulence Intensity: <span id="Tubar_0_value" class="highlight">0.01</span></label>
+                                <input type="range" id="Tubar_0" name="Tubar_0" min="0.0" max="0.05" step="0.0001" value="0.01">
+                            </div> 
                         </div>
                         <div class="flex-auto">
-                            <!-- <div class="input">
-                                <label for="fluid_density">Fluid Density (Kg/m^3): <span id="fluid_density_value" class="highlight">1005</span></label>
-                                <input type="range" id="fluid_density" name="flow" min="0" max="2000" value="1000">
-                            </div>
                             <div class="input">
-                                <label for="fluid_temperature">Fluid Temperature (C): <span id="fluid_temperature_value" class="highlight">20</span></label>
-                                <input type="range" id="fluid_temperature" name="flow" min="0" max="100" value="20">
-                            </div>
+                                <label for="rho_w">Water Mass Density (kg/m3): <span id="rho_w_value" class="highlight">1000.0</span></label>
+                                <input type="range" id="rho_w" name="rho_w" min="0.0" max="10000.0" step="10.0" value="1000.0">
+                            </div> 
                             <div class="input">
-                                <label for="nozzle_diameter_in">Nozzle Diameter in (mm): <span id="nozzle_diameter_in_value" class="highlight">60</span></label>
-                                <input type="range" id="nozzle_diameter_in" name="flow" min="1" max="100" value="60">
-                            </div>
+                                <label for="sigma">Water Surface Tension (N/m): <span id="sigma_value" class="highlight">0.0728</span></label>
+                                <input type="range" id="sigma" name="sigma" min="0.0" max="0.1" step="0.0001" value="0.0728">
+                            </div> 
                             <div class="input">
-                                <label for="nozzle_diameter_out">Nozzle Diameter Out (mm): <span id="nozzle_diameter_out_value" class="highlight">10</span></label>
-                                <input type="range" id="nozzle_diameter_out" name="flow" min="1" max="100" value="10">
-                            </div>
-                            <div class="toggle">
-                                <label for="toggle_units">Toggle Units <span id="toggle_units_value" class="highlight">Metric</span></label>
-                                <div class="toggle-wrapper" id="toggle_units"></div>
-                            </div> -->
+                                <label for="rho_g">Air Mass Density (kg/m3): <span id="rho_g_value" class="highlight">1.293</span></label>
+                                <input type="range" id="rho_g" name="rho_g" min="0.0" max="10.0" step="0.001" value="1.293">
+                            </div> 
+                            <div class="input">
+                                <label for="d_0">Nozzle Diameter (m): <span id="d_0_value" class="highlight">0.00635</span></label>
+                                <input type="range" id="d_0" name="d_0" min="0.0" max="0.02" step="0.00001" value="0.00635">
+                            </div> 
+                            <div class="input">
+                                <label for="Q">Flow Rate (mL/s): <span id="Q_value" class="highlight">100</span></label>
+                                <input type="range" id="Q" name="Q" min="0" max="1000" step="1" value="100">
+                            </div> 
                         </div>
-                    </div>
-                    <!-- <input type="range" class="input" id="nozzle_diameter_out" name="flow" min="1" max="100" value="10">
-                    <label for="nozzle_diameter_out">Nozzle Diameter out (mm): </label><span id="nozzle_diameter_out_value">10</span>
-                    <br> -->    
-                    <!-- <div class="range-slider"><range slider element
-                        <input type="range" /> hidden
-                        <div class="range-slider__thumb" data-lower></div>
-                        <div class="range-slider__range"></div>
-                    </div>                        -->
+                    </div>                      
                 </div>
                 <div class="flex-33 padding border light-bg outputs">
                     <div class="flex center-x center-y padding border nozzle-viewport">
@@ -107,18 +115,7 @@
                             "/> 
                         </svg>
                     </div>
-                    <div class="output">
-                        <p>Flow velocity (W): <span class="highlight">0</span></p>
-                        <p>Volumetric flow rate (Q): <span class="highlight">0</span></p>
-                        <p>Reynolds number (Re): <span class="highlight">0</span></p>
-                        <p>Friction factor (f): <span class="highlight">0</span></p>
-                        <p>Pressure drop (ΔP): <span class="highlight">0</span></p>
-                        <p>Head loss (hL): <span class="highlight">0</span></p>
-                        <p>Power (P): <span class="highlight">0</span></p>
-                        <p>Range (R): <span class="highlight">0</span></p>
-                    </div>
-                    <hr>
-                    <h2>Range: <span id="range_value" class="highlight">0</span></h2>
+                    <h2 class="output" id="R_output">Range: <span class="highlight">0</span></h2>
                 </div>
             </div>
         </main>
@@ -132,7 +129,6 @@
                     </ul>
                 </div>
                 <div>
-                    <p>Blog article on <a href="https://beanwaterantics.com/notes" target="_blank" rel="noopener noreferrer">Bean Water Antics</a></p>
                     <p>Source code on <a href="https://github.com/kspangdg/water-stream-sim" target="_blank" rel="noopener noreferrer">Github</a></p>
                 </div>
             </div>
@@ -142,7 +138,6 @@
     <!-- Classes -->
     <script type="text/javascript" src="assets/js/classes/Window.js"></script>
     <script type="text/javascript" src="assets/js/classes/Droplet.js"></script>
-    <script type="text/javascript" src="assets/js/classes/Render.js"></script>
     <script type="text/javascript" src="assets/js/classes/Helper.js"></script>
     <script type="text/javascript" src="assets/js/classes/Input.js"></script>
     <script type="text/javascript" src="assets/js/classes/output.js"></script>
